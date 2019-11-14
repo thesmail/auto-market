@@ -1,0 +1,41 @@
+{% extends 'orders/base_orders.html' %}
+
+{% block title %}
+Client list - {{block.super}}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col offset-md-2">
+        <h1 class='mb-5'>Clients list:</h1>
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First name</th>
+                    <th scope="col">Last name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Note</th>
+                    <th scope="col">Car(s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <th scope="row">{{ client.id}}</th>
+                    <td><a href="{{ client.get_absolute_url }}">{{ client.first_name }}</a></td>
+                    <td>{{ client.last_name }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>{{ client.note_c}}</td>
+                    <td>
+                        {% for car in client.Cars.all %}
+                        <a href="{{ car.get_absolute_url }}">{{ car.manufacturer }} {{ car.model }}</a><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

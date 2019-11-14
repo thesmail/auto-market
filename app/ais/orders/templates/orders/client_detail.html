@@ -1,0 +1,112 @@
+{% extends 'orders/base_orders.html' %}
+
+{% block title %}
+Client - {{block.super}}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col offset-md-2">
+            <h1>Client:</h1>
+        </div>
+        <div class="col">
+            <h1>Car's:</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col offset-md-2">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{client.last_name}} {{client.first_name}} - #{{client.id}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Tel: +{{client.phone}}</h6>
+                    <p class="card-text">{{client.note_c}}</p>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">Edit bio</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mb-5">
+            <div class="row">
+                <!-- <div class="card" style="width: 10rem;"> -->
+                <div class="container-fluid">
+                    <div class="row flex-row flex-nowrap">
+                        {% for car in client.cars.all %}
+                        <div class="col">
+                            <div class="card card-block" style="width: 17rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ car.manufacturer }} {{ car.model }} - {{ car.year }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">VIN: {{ car.vin }}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Body: {{ car.body }}</h6>
+                                    <a href="#" class="card-link">Card link</a>
+                                    <a href="#" class="card-link">Another link</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+
+                <!-- <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            {{ car.manufacturer }} {{ car.model }}
+                        </a>
+                    </div> -->
+                <!-- <div class="card-body">
+                        <h5 class="card-title">{{ car.manufacturer }} {{ car.model }} - {{ car.year }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">VIN: {{ car.vin }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Body: {{ car.body }}</h6>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div> -->
+                <!-- </div> -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit bio #{{client.id}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputFirstName">First name</label>
+                            <input type="text" class="form-control" id="inputFirstName" placeholder="First name" value="{{client.first_name}}">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputLastName">Last name</label>
+                            <input type="text" class="form-control" id="inputLastName" placeholder="Last name" value="{{client.last_name}}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputPhone">Phone</label>
+                            <input type="text" class="form-control" id="inputPhone" placeholder="Phone" value="{{client.phone}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="TextareaNote">Note</label>
+                        <textarea class="form-control" id="TextareaNote" rows="3">{{ client.note_c }}</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

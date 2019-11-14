@@ -1,0 +1,14 @@
+{% extends 'orders/base_orders.html' %}
+<h1>Hello</h1>
+<h2>YYYY</h2>
+
+{% block title %}
+    Orders list
+{% endblock %}
+
+{% block content %}
+    <h1 class="mb-5">Orders:</h1>
+    {% for name in names %}
+        <p>{{ name }}</p>
+    {% endfor %}
+{% endblock %}
