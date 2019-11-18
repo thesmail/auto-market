@@ -3,17 +3,21 @@ from django.shortcuts import reverse
 
 # Create your models here.
 
-class Status(models.Model):
-    status = models.CharField(max_length=150, db_index=True)
-
-    def __str__(self):
-        return '{}'.format(self.name)
-
 class Client(models.Model):
+    SEX = (
+        ('M', 'Мужчина'),
+        ('F', 'Женщина'),
+    )
+    LABEL = (
+        ('V', 'VIP-клиент'),
+        ('K', 'Конфликтный'),
+        ('D', 'Должник'),
+    )
     first_name = models.CharField(max_length=50, db_index=True)
     last_name = models.CharField(max_length=50, db_index=True)
+    sex = models.CharField(max_length=1, choices=SEX)
     phone = models.CharField(max_length=11, db_index=True)
-    note_c = models.CharField(max_length=150, blank=True)
+    label = models.CharField(max_length=1, choices=LABEL, blank=True)
     slug = models.SlugField(max_length=150, unique=True)
 
     def get_absolute_url(self):
@@ -22,29 +26,65 @@ class Client(models.Model):
     def __str__(self):
         return self.first_name
 
-class Car(models.Model):
-    client = models.ForeignKey('Client', on_delete=models.CASCADE, related_name='cars')
-    manufacturer = models.CharField(max_length=150)
-    model = models.CharField(max_length=150)
-    year = models.CharField(max_length=4)
-    vin_body = models.CharField(max_length=40, blank=True)
-    horsepower = models.FloatField(max_length=5)
+class Worker(models.Model):
+    f_name = models.CharField(max_length=50)
+    l_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.f_name
+
+class Contractor(models.Model):
+    contractor_name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=150, unique=True)
 
     def get_absolute_url(self):
-        return reverse('car_detail_url', kwargs={'slug': self.slug})
+        return reverse('contractor_detail_url', kwargs={'slug': self.slug})
 
     def __str__(self):
-        return self.manufacturer
+        return self.contractor_name
+
+class Car(models.Model):
+    client = models.ForeignKey('Client', on_delete=models.CASCADE, related_name='car')
+    makes = models.CharField(max_length=80)
+    model = models.CharField(max_length=80)
+    year = models.CharField(max_length=4, blank=True)
+    vin = models.CharField(max_length=25)
+    hp = models.FloatField(max_length=5, blank=True)
+
+    def __str__(self):
+        return self.makes
+
+class Product(models.Model):
+    STATUS = (
+        ('A', 'Не закуплен'),
+        ('B', 'Ожидается'),
+        ('C', 'В наличии'),
+        ('D', 'Выдан'),
+        ('E', 'Возврат'),
+    )
+    product_name = models.CharField(max_length=80)
+    articul = models.CharField(max_length=20)
+    contractor = models.ForeignKey('Contractor', on_delete=models.CASCADE, related_name='product')
+    status = models.CharField(max_length=1, choices=STATUS, default='A')
+    price_purchase = models.IntegerField(max_length=10)
+    price_sale = models.IntegerField(max_length=10)
+    info_car = models.CharField(max_length=80)
+
+    def __str__(self):
+        return self.product_name
 
 class Order(models.Model):
+    STATUS = (
+        ('A', 'В работе'),
+        ('B', 'Завершен'),
+    )
     date_create = models.DateTimeField(auto_now_add=True)
     date_end = models.DateTimeField(blank=True)
-    client = models.ForeignKey('Client', on_delete=models.CASCADE, related_name='orders')
-    car = models.ForeignKey('Car', on_delete=models.CASCADE, related_name='order')
+    status = models.CharField(max_length=1, choices=STATUS, default='A')
+    client = models.ForeignKey('Client', on_delete=models.CASCADE, related_name='order')
+    worker = models.ForeignKey('Worker', on_delete=models.CASCADE, related_name='order')
     product = models.ManyToManyField('Product', related_name='order')
-    deposit = model.IntegerField(max_length=10)
-    note_o = models.CharField(max_length=150, blank=True)
+    deposit = models.IntegerField(max_length=10, default='0')
     slug = models.SlugField(max_length=150, unique=True)
 
     def get_absolute_url(self):
@@ -52,15 +92,3 @@ class Order(models.Model):
 
     def __str__(self):
         return self.id
-
-class Product(models.Model):
-    name_p = models.CharField(max_length=150)
-    articul = models.CharField(max_length=40)
-    contractor = models.ForeignKey('Contractor', on_delete=models.CASCADE, related_name='products')
-    price = model.IntegerField(max_length=10)
-    quantity = model.IntegerField(max_length=5)
-    status = models.ForeignKey('Status', on_delete=models.CASCADE, related_name='products')
-
-class Contractor(models.Model):
-    name_c = models.CharField(max_length=40)
-    slug = models.SlugField(max_length=150, unique=True)

@@ -6,8 +6,12 @@ from .utils import ObjectDetailMixin
 
 # Create your views here.
 def orders_list(request):
-    n = ['Oleg', 'Elena', 'Petya']
-    return render(request, 'orders/index.html', context={'names':n})
+    orders = Order.objects.all()
+    return render(request, 'orders/index.html', context={'orders': orders})
+
+class OrderDetail(ObjectDetailMixin, View):
+    model = Order
+    template = 'orders/order_detail.html'
 
 def clients_list(request):
     clients = Client.objects.all()
@@ -16,11 +20,3 @@ def clients_list(request):
 class ClientDetail(ObjectDetailMixin, View):
     model = Client
     template = 'orders/client_detail.html'
-
-def cars_list(request):
-    cars = Cars.objects.all()
-    return render(request, 'orders/cars_list.html', context={'cars': cars})
-
-class CarDetail(ObjectDetailMixin, View):
-    model = Cars
-    template = 'orders/car_detail.html'
